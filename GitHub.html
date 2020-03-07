@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <style>
+div {
+  border: 1px solid black;
+  background-color: lightblue;
+  padding-top: 50px;
+  padding-right: 30px;
+  padding-bottom: 50px;
+  padding-left: 80px;
+}
+</style>
+    <script>
+$(document).ready(function(){
+  $("#Nombre").hide();
+   $("#seguidores").hide();
+    $("#siguiendo").hide();
+  $("#btn").click(function(){
+     $("#tb tbody tr").remove();
+     $("#Nombre").show();
+   $("#seguidores").show();
+    $("#siguiendo").show();
+    $.get("https://api.github.com/users/"+ $("#usr").val(),function(github){
+     nom=github.name;
+     numfollowers=github.followers;
+     following=github.following;
+     $("#Nombre").text("Nombre: "+ nom);
+     $("#seguidores").text("Seguidores: "+numfollowers);
+     $("#siguiendo").text("Siguiendo: "+ following);
+    });
+    $.get("https://api.github.com/users/"+ $("#usr").val()+"/repos",function(github){
+       $.each(github,function(i,github){
+       repositorio=github.name;
+       descrip=github.description;
+       lenguaje=github.language;
+       entrada = '<tr>' + '<td>' + repositorio + '</td>' + '<td>' + descrip + '</td>' + '<td>' + lenguaje + '</td>' + '</tr>';
+       $("#tb").append(entrada);
+       });
+      });
+  });
+});
+</script>
+    <title>GitHub Search</title>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">Perfiles de GitHub</h2>
+    <form class="form-inline" action="/action_page.php">
+        <div class="form-group">
+            <label for="usr">Usuario:</label>
+            <input type="text" class="form-control" id="usr">
+        </div>
+        <a id="btn" class="btn" role="button">Buscar</a>
+    </form>
+    <div class="f">
+        <p id="Nombre">Nombre:</p>
+        <p id="seguidores">Seguidores:</p>
+        <p id="siguiendo">Siguiendo:</p>
+    </div>
+    <div class="c">
+        <table id="tb" class="table">
+            <thead>
+            <tr>
+                <th id="name">Repositorio</th>
+                <th id="descrp">Descripción</th>
+                <th id="leng">Lenguaje</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
